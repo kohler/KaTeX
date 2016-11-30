@@ -738,7 +738,7 @@ Parser.prototype.parseGroup = function(optional) {
 
 /**
  * Form ligature-like combinations of characters for text mode.
- * This includes inputs like "--", "---", "``" and "''".
+ * This includes inputs like "--", "---", "``", "''", "?`", and "!`".
  * The result will simply replace multiple textord nodes with a single
  * character in each value by a single textord node having multiple
  * characters in its value.  The representation is still ASCII source.
@@ -766,6 +766,11 @@ Parser.prototype.formLigatures = function(group) {
         if ((v === "'" || v === "`") && group[i + 1].value === v) {
             group.splice(i, 2, new ParseNode(
                 "textord", v + v, "text", a, group[i + 1]));
+            n -= 1;
+        }
+        if ((v === "?" || v === "!") && group[i + 1].value === "`") {
+            group.splice(i, 2, new ParseNode(
+                "textord", v + "`", "text", a, group[i + 1]));
             n -= 1;
         }
     }

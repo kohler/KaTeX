@@ -56,18 +56,16 @@ const sigmas = {
     delim2: [1.010, 1.157, 1.420],      // sigma21
     axisHeight: [0.250, 0.250, 0.250],  // sigma22
 
-    // These font metrics are extracted from TeX by using
-    // \font\a=cmex10
-    // \showthe\fontdimenX\a
-    // where X is the corresponding variable number. These correspond to the
-    // font parameters of the extension fonts (family 3). See the TeXbook,
-    // page 441.
-    defaultRuleThickness: [0.04, 0.04, 0.04], // xi8
-    bigOpSpacing1: [0.111, 0.111, 0.111],     // xi9
-    bigOpSpacing2: [0.166, 0.166, 0.166],     // xi10
-    bigOpSpacing3: [0.2, 0.2, 0.2],           // xi11
-    bigOpSpacing4: [0.6, 0.6, 0.6],           // xi12
-    bigOpSpacing5: [0.1, 0.1, 0.1],           // xi13
+    // These font metrics are extracted from TeX by using tftopl on cmex10.tfm;
+    // they correspond to the font parameters of the extension fonts (family 3).
+    // See the TeXbook, page 441. In AMSTeX, the extension fonts scale: we use
+    // cmex7.tfm for script and scriptscript values.
+    defaultRuleThickness: [0.04, 0.049, 0.049], // xi8
+    bigOpSpacing1: [0.111, 0.111, 0.111],       // xi9
+    bigOpSpacing2: [0.166, 0.166, 0.166],       // xi10
+    bigOpSpacing3: [0.2, 0.2, 0.2],             // xi11
+    bigOpSpacing4: [0.6, 0.611, 0.611],         // xi12
+    bigOpSpacing5: [0.1, 0.143, 0.143],         // xi13
 
     // This value determines how large a pt is, for metrics which are defined
     // in terms of pts.

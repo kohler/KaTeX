@@ -437,13 +437,8 @@ groupTypes.genfrac = function(group, options) {
     newOptions = options.havingStyle(dstyle);
     const denomm = buildGroup(group.value.denom, newOptions, options);
 
-    let ruleWidth;
-    if (group.value.hasBarLine) {
-        ruleWidth = style.metrics.defaultRuleThickness /
-            options.sizeMultiplier;
-    } else {
-        ruleWidth = 0;
-    }
+    const ruleSpacing = style.metrics.defaultRuleThickness;
+    const ruleWidth = group.value.hasBarLine ? ruleSpacing : 0;
 
     // Rule 15b
     let numShift;
@@ -454,7 +449,7 @@ groupTypes.genfrac = function(group, options) {
         if (ruleWidth > 0) {
             clearance = 3 * ruleWidth;
         } else {
-            clearance = 7 * style.metrics.defaultRuleThickness;
+            clearance = 7 * ruleSpacing;
         }
         denomShift = style.metrics.denom1;
     } else {
@@ -463,7 +458,7 @@ groupTypes.genfrac = function(group, options) {
             clearance = ruleWidth;
         } else {
             numShift = style.metrics.num3;
-            clearance = 3 * style.metrics.defaultRuleThickness;
+            clearance = 3 * ruleSpacing;
         }
         denomShift = style.metrics.denom2;
     }
@@ -500,7 +495,7 @@ groupTypes.genfrac = function(group, options) {
                              (denomm.height - denomShift));
         }
 
-        const mid = makeLineSpan("frac-line", options);
+        const mid = makeLineSpan("frac-line", options, ruleWidth);
         const midShift = -(axisHeight - 0.5 * ruleWidth);
 
         frac = buildCommon.makeVList([
@@ -994,13 +989,10 @@ groupTypes.katex = function(group, options) {
         ["mord", "katex-logo"], [k, a, t, e, x], options);
 };
 
-const makeLineSpan = function(className, options) {
-    const size5Options = options.havingSize(5);
-    const line = makeSpan(
-        [className].concat(size5Options.sizingClasses(options)),
-        [], options);
-    line.height = options.style.metrics.defaultRuleThickness /
-        options.sizeMultiplier;
+const makeLineSpan = function(className, options, thickness) {
+    const line = makeSpan([className], [], options);
+    line.height = thickness || options.style.metrics.defaultRuleThickness;
+    line.style.borderBottomWidth = line.height + "em";
     line.maxFontSize = 1.0;
     return line;
 };
@@ -1052,8 +1044,10 @@ groupTypes.sqrt = function(group, options) {
     // and line
     const inner = buildGroup(group.value.body, options.havingCrampedStyle());
 
-    const line = makeLineSpan("sqrt-line", options);
-    const ruleWidth = line.height;
+    // The rule width is unscaled since the \sqrt glyph is rendered unscaled
+    const ruleWidth = Style.TEXT.metrics.defaultRuleThickness /
+        options.sizeMultiplier;
+    const line = makeLineSpan("sqrt-line", options, ruleWidth);
 
     let phi = ruleWidth;
     if (options.style.id < Style.TEXT.id) {

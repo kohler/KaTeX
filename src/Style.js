@@ -17,7 +17,7 @@ for (const key in sigmas) {
     }
 }
 for (let i = 0; i < 3; i++) {
-    metrics[i].emPerEx = sigmas.xHeight[i] / sigmas.quad[i];
+    metrics[i].emPerEx = metrics[i].xHeight / metrics[i].quad;
 }
 
 /**

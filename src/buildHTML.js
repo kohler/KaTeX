@@ -12,7 +12,6 @@ const Style = require("./Style");
 const buildCommon = require("./buildCommon");
 const delimiter = require("./delimiter");
 const domTree = require("./domTree");
-const fontMetrics = require("./fontMetrics");
 const utils = require("./utils");
 
 const makeSpan = buildCommon.makeSpan;
@@ -347,7 +346,7 @@ groupTypes.supsub = function(group, options) {
     // appropriately
     const multiplier = options.sizeMultiplier;
     const scriptspace =
-        (0.5 / fontMetrics.metrics.ptPerEm) / multiplier + "em";
+        (0.5 / style.metrics.ptPerEm) / multiplier + "em";
 
     let supsub;
     if (!group.value.sup) {
@@ -383,7 +382,7 @@ groupTypes.supsub = function(group, options) {
             supShift, minSupShift, supm.depth + 0.25 * style.metrics.xHeight);
         subShift = Math.max(subShift, style.metrics.sub2);
 
-        const ruleWidth = fontMetrics.metrics.defaultRuleThickness;
+        const ruleWidth = style.metrics.defaultRuleThickness;
 
         // Rule 18e
         if ((supShift - supm.depth) - (subm.height - subShift) <
@@ -440,7 +439,7 @@ groupTypes.genfrac = function(group, options) {
 
     let ruleWidth;
     if (group.value.hasBarLine) {
-        ruleWidth = fontMetrics.metrics.defaultRuleThickness /
+        ruleWidth = style.metrics.defaultRuleThickness /
             options.sizeMultiplier;
     } else {
         ruleWidth = 0;
@@ -455,7 +454,7 @@ groupTypes.genfrac = function(group, options) {
         if (ruleWidth > 0) {
             clearance = 3 * ruleWidth;
         } else {
-            clearance = 7 * fontMetrics.metrics.defaultRuleThickness;
+            clearance = 7 * style.metrics.defaultRuleThickness;
         }
         denomShift = style.metrics.denom1;
     } else {
@@ -464,7 +463,7 @@ groupTypes.genfrac = function(group, options) {
             clearance = ruleWidth;
         } else {
             numShift = style.metrics.num3;
-            clearance = 3 * fontMetrics.metrics.defaultRuleThickness;
+            clearance = 3 * style.metrics.defaultRuleThickness;
         }
         denomShift = style.metrics.denom2;
     }
@@ -568,7 +567,7 @@ groupTypes.array = function(group, options) {
     const style = options.style;
 
     // Horizontal spacing
-    const pt = 1 / fontMetrics.metrics.ptPerEm;
+    const pt = 1 / options.style.metrics.ptPerEm;
     const arraycolsep = 5 * pt; // \arraycolsep in article.cls
 
     // Vertical spacing
@@ -642,7 +641,7 @@ groupTypes.array = function(group, options) {
             if (!firstSeparator) {
                 colSep = makeSpan(["arraycolsep"], []);
                 colSep.style.width =
-                    fontMetrics.metrics.doubleRuleSep + "em";
+                    style.metrics.doubleRuleSep + "em";
                 cols.push(colSep);
             }
 
@@ -834,8 +833,8 @@ groupTypes.op = function(group, options) {
             supm = buildGroup(supGroup, newOptions, options);
 
             supKern = Math.max(
-                fontMetrics.metrics.bigOpSpacing1,
-                fontMetrics.metrics.bigOpSpacing3 - supm.depth);
+                style.metrics.bigOpSpacing1,
+                style.metrics.bigOpSpacing3 - supm.depth);
         }
 
         if (subGroup) {
@@ -843,8 +842,8 @@ groupTypes.op = function(group, options) {
             subm = buildGroup(subGroup, newOptions, options);
 
             subKern = Math.max(
-                fontMetrics.metrics.bigOpSpacing2,
-                fontMetrics.metrics.bigOpSpacing4 - subm.height);
+                style.metrics.bigOpSpacing2,
+                style.metrics.bigOpSpacing4 - subm.height);
         }
 
         // Build the final group as a vlist of the possible subscript, base,
@@ -856,7 +855,7 @@ groupTypes.op = function(group, options) {
             top = base.height - baseShift;
 
             finalGroup = buildCommon.makeVList([
-                {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
+                {type: "kern", size: style.metrics.bigOpSpacing5},
                 {type: "elem", elem: subm},
                 {type: "kern", size: subKern},
                 {type: "elem", elem: base},
@@ -874,7 +873,7 @@ groupTypes.op = function(group, options) {
                 {type: "elem", elem: base},
                 {type: "kern", size: supKern},
                 {type: "elem", elem: supm},
-                {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
+                {type: "kern", size: style.metrics.bigOpSpacing5},
             ], "bottom", bottom, options);
 
             // See comment above about slants
@@ -885,19 +884,19 @@ groupTypes.op = function(group, options) {
             // subscript) but be safe.
             return base;
         } else {
-            bottom = fontMetrics.metrics.bigOpSpacing5 +
+            bottom = style.metrics.bigOpSpacing5 +
                 subm.height + subm.depth +
                 subKern +
                 base.depth + baseShift;
 
             finalGroup = buildCommon.makeVList([
-                {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
+                {type: "kern", size: style.metrics.bigOpSpacing5},
                 {type: "elem", elem: subm},
                 {type: "kern", size: subKern},
                 {type: "elem", elem: base},
                 {type: "kern", size: supKern},
                 {type: "elem", elem: supm},
-                {type: "kern", size: fontMetrics.metrics.bigOpSpacing5},
+                {type: "kern", size: style.metrics.bigOpSpacing5},
             ], "bottom", bottom, options);
 
             // See comment above about slants
@@ -1000,7 +999,7 @@ const makeLineSpan = function(className, options) {
     const line = makeSpan(
         [className].concat(size5Options.sizingClasses(options)),
         [], options);
-    line.height = fontMetrics.metrics.defaultRuleThickness /
+    line.height = options.style.metrics.defaultRuleThickness /
         options.sizeMultiplier;
     line.maxFontSize = 1.0;
     return line;

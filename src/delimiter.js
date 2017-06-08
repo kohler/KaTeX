@@ -514,7 +514,7 @@ const makeLeftRightDelim = function(delim, height, depth, options, mode,
 
     // Taken from TeX source, tex.web, function make_left_right
     const delimiterFactor = 901;
-    const delimiterExtend = 5.0 / fontMetrics.metrics.ptPerEm;
+    const delimiterExtend = 5.0 / options.style.metrics.ptPerEm;
 
     const maxDistFromAxis = Math.max(
         height - axisHeight, depth + axisHeight);

@@ -1299,13 +1299,13 @@ groupTypes.rule = function(group, options) {
     }
 
     let width = calculateSize(group.value.width, style);
-    let height = calculateSize(group.value.height, style);
+    const absHeight = calculateSize(group.value.height, style);
 
     // The sizes of rules are absolute, so make it larger if we are in a
     // smaller style.
     shift /= options.sizeMultiplier;
     width /= options.sizeMultiplier;
-    height /= options.sizeMultiplier;
+    const height = absHeight / options.sizeMultiplier;
 
     // Style the rule to the right size
     rule.style.borderRightWidth = width + "em";
@@ -1316,6 +1316,7 @@ groupTypes.rule = function(group, options) {
     rule.width = width;
     rule.height = height + shift;
     rule.depth = -shift;
+    rule.maxFontSize = absHeight + 0.275 * options.sizeMultiplier;
 
     return rule;
 };
